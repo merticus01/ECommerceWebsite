@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Stories & Editorial – Timeless Finds{% endblock %}
+
+{% block content %}
+<section class="tf-page">
+  <header class="tf-section-header">
+    <h1>Stories & Editorial</h1>
+    <p>Behind the piece, seller spotlights, era guides, and care tips for vintage collectors.</p>
+  </header>
+
+  <div class="tf-editorial-grid">
+    {% for article in articles %}
+      <article class="tf-editorial-card-large">
+        <a href="{{ article.get_absolute_url }}" class="tf-editorial-link">
+          {% if article.hero_image %}
+            <div class="tf-editorial-image" style="background-image:url('{{ article.hero_image.url }}');"></div>
+          {% else %}
+            <div class="tf-editorial-image tf-placeholder"></div>
+          {% endif %}
+          <div class="tf-editorial-card-body">
+            <p class="tf-card-eyebrow">{{ article.get_type_display }}</p>
+            <h2>{{ article.title }}</h2>
+            <p class="tf-editorial-excerpt">{{ article.excerpt }}</p>
+            <span class="tf-editorial-link-text">Read more →</span>
+          </div>
+        </a>
+      </article>
+    {% empty %}
+      <p class="tf-empty">Editorial stories are coming soon. Check back for behind-the-scenes stories, seller spotlights, and vintage care guides.</p>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}
+

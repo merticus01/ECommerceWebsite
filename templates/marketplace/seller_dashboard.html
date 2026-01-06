@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block title %}Seller Dashboard – Timeless Finds{% endblock %}
+
+{% block content %}
+<div class="tf-page">
+  <header class="tf-section-header">
+    <h1>Seller Dashboard</h1>
+    {% if seller %}
+      <p>Manage your listings and track your sales for {{ seller.display_name }}.</p>
+    {% else %}
+      <p>Create a seller profile to start listing vintage items.</p>
+    {% endif %}
+  </header>
+
+  {% if seller %}
+    <div class="tf-seller-dashboard">
+      <div class="tf-dashboard-stats">
+        <div class="tf-stat-card">
+          <strong>{{ products.count }}</strong>
+          <span>Active Listings</span>
+        </div>
+        <div class="tf-stat-card">
+          <strong>0</strong>
+          <span>Total Sales</span>
+        </div>
+        <div class="tf-stat-card">
+          <strong>$0</strong>
+          <span>Total Earnings</span>
+        </div>
+      </div>
+
+      <div class="tf-dashboard-actions">
+        <a href="/admin/marketplace/product/add/" class="tf-btn tf-btn-primary">Add New Listing</a>
+        <a href="/admin/marketplace/product/" class="tf-btn tf-btn-ghost">Manage Listings</a>
+      </div>
+
+      <section class="tf-dashboard-section">
+        <h2>Your Products</h2>
+        {% if products %}
+          <div class="tf-grid">
+            {% for product in products %}
+              <article class="tf-card">
+                <a href="{{ product.get_absolute_url }}" class="tf-card-link">
+                  {% with image=product.images.first %}
+                    {% if image %}
+                      <div class="tf-card-image" style="background-image:url('{{ image.image.url }}');"></div>
+                    {% else %}
+                      <div class="tf-card-image tf-card-placeholder"></div>
+                    {% endif %}
+                  {% endwith %}
+                  <div class="tf-card-body">
+                    <p class="tf-card-eyebrow">{{ product.era }} • {{ product.get_category_display }}</p>
+                    <h3>{{ product.title }}</h3>
+                    <p class="tf-card-price">${{ product.price }}</p>
+                    <p class="tf-card-meta">
+                      {% if product.is_active %}
+                        <span class="tf-status-active">Active</span>
+                      {% else %}
+                        <span class="tf-status-inactive">Inactive</span>
+                      {% endif %}
+                      {% if product.is_featured %}
+                        <span class="tf-status-featured">Featured</span>
+                      {% endif %}
+                    </p>
+                  </div>
+                </a>
+              </article>
+            {% endfor %}
+          </div>
+        {% else %}
+          <p class="tf-empty">You haven't listed any products yet. <a href="/admin/marketplace/product/add/">Create your first listing</a> to get started.</p>
+        {% endif %}
+      </section>
+    </div>
+  {% else %}
+    <div class="tf-empty-state">
+      <p>You need to create a seller profile first. Please contact support or use the admin panel to set up your seller account.</p>
+      <a href="/admin/" class="tf-btn tf-btn-primary">Go to Admin</a>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}
+

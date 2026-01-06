@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+
+{% block title %}My Account – Timeless Finds{% endblock %}
+
+{% block content %}
+<div class="tf-page">
+  <header class="tf-section-header">
+    <h1>My Account</h1>
+    <p>Manage your orders, favorites, and account settings.</p>
+  </header>
+
+  <div class="tf-dashboard-tabs">
+    <a href="#orders" class="tf-tab tf-tab-active">Orders</a>
+    <a href="#favorites" class="tf-tab">Favorites</a>
+  </div>
+
+  <section id="orders" class="tf-dashboard-section">
+    <h2>Order History</h2>
+    {% if orders %}
+      <div class="tf-order-list">
+        {% for order in orders %}
+          <div class="tf-order-card">
+            <div class="tf-order-header">
+              <div>
+                <strong>Order #{{ order.pk }}</strong>
+                <span class="tf-order-date">{{ order.created_at|date:"F j, Y" }}</span>
+              </div>
+              <span class="tf-order-status tf-status-{{ order.status }}">{{ order.get_status_display }}</span>
+            </div>
+            <div class="tf-order-items">
+              {% for item in order.items.all %}
+                <div class="tf-order-item">
+                  <span>{{ item.product.title }}</span>
+                  <span>Qty: {{ item.quantity }}</span>
+                  <span>${{ item.subtotal }}</span>
+                </div>
+              {% endfor %}
+            </div>
+            <div class="tf-order-total">
+              <strong>Total: ${{ order.total }}</strong>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="tf-empty">You haven't placed any orders yet. <a href="{% url 'product_list' %}">Start shopping</a> to discover timeless pieces.</p>
+    {% endif %}
+  </section>
+
+  <section id="favorites" class="tf-dashboard-section" style="display: none;">
+    <h2>Saved Favorites</h2>
+    {% if favorites %}
+      <div class="tf-grid">
+        {% for favorite in favorites %}
+          <article class="tf-card">
+            <a href="{{ favorite.product.get_absolute_url }}" class="tf-card-link">
+              {% with image=favorite.product.images.first %}
+                {% if image %}
+                  <div class="tf-card-image" style="background-image:url('{{ image.image.url }}');"></div>
+                {% else %}
+                  <div class="tf-card-image tf-card-placeholder"></div>
+                {% endif %}
+              {% endwith %}
+              <div class="tf-card-body">
+                <p class="tf-card-eyebrow">{{ favorite.product.era }} • {{ favorite.product.get_category_display }}</p>
+                <h3>{{ favorite.product.title }}</h3>
+                <p class="tf-card-price">${{ favorite.product.price }}</p>
+              </div>
+            </a>
+          </article>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="tf-empty">You haven't saved any favorites yet. Browse our <a href="{% url 'product_list' %}">collection</a> and save pieces you love.</p>
+    {% endif %}
+  </section>
+</div>
+
+<script>
+  document.querySelectorAll('.tf-tab').forEach(tab => {
+    tab.addEventListener('click', (e) => {
+      e.preventDefault();
+      const target = tab.getAttribute('href').substring(1);
+      document.querySelectorAll('.tf-dashboard-section').forEach(section => {
+        section.style.display = 'none';
+      });
+      document.querySelector(`#${target}`).style.display = 'block';
+      document.querySelectorAll('.tf-tab').forEach(t => t.classList.remove('tf-tab-active'));
+      tab.classList.add('tf-tab-active');
+    });
+  });
+</script>
+{% endblock %}
+

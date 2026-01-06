@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ article.title }} – Timeless Finds{% endblock %}
+
+{% block content %}
+<article class="tf-page">
+  <div class="tf-editorial-article">
+    {% if article.hero_image %}
+      <div class="tf-editorial-hero">
+        <img src="{{ article.hero_image.url }}" alt="{{ article.title }}">
+      </div>
+    {% endif %}
+
+    <header class="tf-editorial-header">
+      <p class="tf-editorial-type">{{ article.get_type_display }}</p>
+      <h1>{{ article.title }}</h1>
+      {% if article.excerpt %}
+        <p class="tf-editorial-excerpt-large">{{ article.excerpt }}</p>
+      {% endif %}
+      <p class="tf-editorial-date">{{ article.created_at|date:"F j, Y" }}</p>
+    </header>
+
+    <div class="tf-editorial-body">
+      {{ article.body|linebreaks }}
+    </div>
+
+    {% if article.featured_product %}
+      <div class="tf-editorial-product-feature">
+        <h2>Featured Piece</h2>
+        <div class="tf-card">
+          <a href="{{ article.featured_product.get_absolute_url }}" class="tf-card-link">
+            {% with image=article.featured_product.images.first %}
+              {% if image %}
+                <div class="tf-card-image" style="background-image:url('{{ image.image.url }}');"></div>
+              {% else %}
+                <div class="tf-card-image tf-card-placeholder"></div>
+              {% endif %}
+            {% endwith %}
+            <div class="tf-card-body">
+              <p class="tf-card-eyebrow">{{ article.featured_product.era }} • {{ article.featured_product.get_category_display }}</p>
+              <h3>{{ article.featured_product.title }}</h3>
+              <p class="tf-card-price">${{ article.featured_product.price }}</p>
+            </div>
+          </a>
+        </div>
+      </div>
+    {% endif %}
+
+    {% if article.seller %}
+      <div class="tf-editorial-seller-feature">
+        <h2>About the Seller</h2>
+        <div class="tf-seller-card">
+          <a href="{{ article.seller.get_absolute_url }}" class="tf-seller-link">
+            <strong>{{ article.seller.display_name }}</strong>
+            {% if article.seller.location %}
+              <span> • {{ article.seller.location }}</span>
+            {% endif %}
+          </a>
+          {% if article.seller.bio %}
+            <p>{{ article.seller.bio|truncatewords:50 }}</p>
+          {% endif %}
+        </div>
+      </div>
+    {% endif %}
+
+    <footer class="tf-editorial-footer">
+      <a href="{% url 'editorial_list' %}" class="tf-link">← Back to Stories</a>
+    </footer>
+  </div>
+</article>
+{% endblock %}
+

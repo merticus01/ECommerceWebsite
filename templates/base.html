@@ -1,0 +1,92 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}{{ SITE_NAME }} – Vintage Marketplace{% endblock %}</title>
+  <meta name="description" content="{% block meta_description %}A curated vintage marketplace focused on authenticity, story, and sustainability.{% endblock %}">
+  <link rel="canonical" href="{{ request.build_absolute_uri }}">
+  <meta property="og:site_name" content="{{ SITE_NAME }}">
+  <meta property="og:title" content="{% block og_title %}{{ SITE_NAME }}{% endblock %}">
+  <meta property="og:description" content="{% block og_description %}A curated vintage marketplace focused on authenticity, story, and sustainability.{% endblock %}">
+  <meta property="og:url" content="{{ request.build_absolute_uri }}">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="stylesheet" href="{% static 'css/timeless.css' %}">
+  {% block extra_css %}{% endblock %}
+</head>
+<body class="tf-body">
+  <header class="tf-site-header">
+    <div class="tf-header-top">
+      <div class="tf-shell tf-header-top-inner">
+        <a href="{% url 'homepage' %}" class="tf-logo-icon">TF</a>
+        <div class="tf-header-search">
+          <form method="get" action="{% url 'product_list' %}" class="tf-search-form" role="search" aria-label="Site search">
+            <input type="text" name="q" placeholder="Search products or brands" class="tf-search-input" value="{{ request.GET.q }}" aria-label="Search terms">
+            <button type="submit" class="tf-search-btn" aria-label="Search">🔍</button>
+          </form>
+        </div>
+        <div class="tf-header-top-actions">
+          <a href="{% url 'cart' %}" class="tf-icon-link" title="Cart">🛒</a>
+          {% if user.is_authenticated %}
+            {% if user.is_seller %}
+              <a href="{% url 'seller_dashboard' %}" class="tf-icon-link" title="Seller Dashboard">Dashboard</a>
+            {% else %}
+              <a href="{% url 'buyer_dashboard' %}" class="tf-icon-link" title="My Account">My Account</a>
+            {% endif %}
+            <a class="tf-icon-link" href="{% url 'logout' %}">Logout</a>
+          {% else %}
+            <a href="{% url 'login' %}" class="tf-icon-link" title="Sign in">Sign In</a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    <nav class="tf-categories-nav">
+      <div class="tf-shell">
+        <button class="tf-cat-toggle">All categories</button>
+        <a href="{% url 'product_list' %}?category=bestsellers" class="tf-cat-link">Bestsellers</a>
+        <a href="{% url 'product_list' %}?category=new" class="tf-cat-link">New</a>
+        <a href="{% url 'product_list' %}?category=gifts" class="tf-cat-link">Gifts</a>
+        <a href="{% url 'product_list' %}?category=home" class="tf-cat-link">Home decor/Furniture</a>
+        <a href="{% url 'product_list' %}?category=clothes" class="tf-cat-link">Clothes</a>
+        <a href="{% url 'product_list' %}?category=toys-&-books" class="tf-cat-link">Toys and Books</a>
+        <a href="{% url 'product_list' %}?category=food" class="tf-cat-link">Food & drink</a>
+        <a href="{% url 'product_list' %}?category=sale" class="tf-cat-link tf-sale">Sale</a>
+      </div>
+    </nav>
+  </header>
+
+  <main class="tf-shell tf-main">
+    {% if messages %}
+      <div class="tf-messages">
+        {% for message in messages %}
+          <div class="tf-message">{{ message }}</div>
+        {% endfor %}
+      </div>
+    {% endif %}
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="tf-site-footer">
+    <div class="tf-shell tf-footer-inner">
+      <p class="tf-footer-brand">Timeless Finds</p>
+      <p class="tf-footer-copy">A curated vintage marketplace focused on authenticity, story, and sustainability.</p>
+    </div>
+  </footer>
+
+  {% block extra_js %}{% endblock %}
+  {% if GOOGLE_ANALYTICS_ID %}
+    <!-- Google Analytics 4 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id={{ GOOGLE_ANALYTICS_ID }}"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);} 
+      gtag('js', new Date());
+      gtag('config', '{{ GOOGLE_ANALYTICS_ID }}', { 'anonymize_ip': true });
+    </script>
+  {% endif %}
+</body>
+</html>
+
+

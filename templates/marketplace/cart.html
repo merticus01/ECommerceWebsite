@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block title %}Shopping Cart – Timeless Finds{% endblock %}
+
+{% block content %}
+<div class="tf-page">
+  <header class="tf-section-header">
+    <h1>Shopping Cart</h1>
+  </header>
+
+  {% if cart.items.all %}
+    <div class="tf-cart">
+      <div class="tf-cart-items">
+        {% for item in cart.items.all %}
+          <div class="tf-cart-item">
+            <a href="{{ item.product.get_absolute_url }}" class="tf-cart-item-image">
+              {% with image=item.product.images.first %}
+                {% if image %}
+                  <img src="{{ image.image.url }}" alt="{{ item.product.title }}">
+                {% else %}
+                  <div class="tf-cart-placeholder"></div>
+                {% endif %}
+              {% endwith %}
+            </a>
+            <div class="tf-cart-item-details">
+              <h3><a href="{{ item.product.get_absolute_url }}">{{ item.product.title }}</a></h3>
+              <p class="tf-cart-item-meta">{{ item.product.era }} • {{ item.product.get_category_display }}</p>
+              <p class="tf-cart-item-seller">Sold by <a href="{{ item.product.seller.get_absolute_url }}">{{ item.product.seller.display_name }}</a></p>
+            </div>
+            <div class="tf-cart-item-price">
+              <p class="tf-cart-item-quantity">Qty: {{ item.quantity }}</p>
+              <p class="tf-cart-item-subtotal">${{ item.subtotal }}</p>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+
+      <div class="tf-cart-summary">
+        <div class="tf-cart-totals">
+          <div class="tf-cart-row">
+            <span>Subtotal</span>
+            <span>${{ cart.total }}</span>
+          </div>
+          <div class="tf-cart-row">
+            <span>Shipping</span>
+            <span>Calculated at checkout</span>
+          </div>
+          <div class="tf-cart-row tf-cart-row-total">
+            <strong>Total</strong>
+            <strong>${{ cart.total }}</strong>
+          </div>
+        </div>
+        {% if user.is_authenticated %}
+          <a href="{% url 'checkout' %}" class="tf-btn tf-btn-primary tf-btn-full">Proceed to Checkout</a>
+        {% else %}
+          <p class="tf-cart-login-prompt">
+            <a href="/admin/login/?next={% url 'checkout' %}">Sign in</a> to proceed to checkout
+          </p>
+        {% endif %}
+        <a href="{% url 'product_list' %}" class="tf-link">Continue Shopping</a>
+      </div>
+    </div>
+  {% else %}
+    <div class="tf-empty-state">
+      <p>Your cart is empty. <a href="{% url 'product_list' %}">Browse our collection</a> to find timeless pieces.</p>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}
+

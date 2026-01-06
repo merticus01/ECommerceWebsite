@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ seller.display_name }} – Timeless Finds{% endblock %}
+
+{% block content %}
+<section class="tf-page">
+  <div class="tf-seller-profile">
+    <header class="tf-seller-header">
+      <div class="tf-seller-info">
+        <h1>{{ seller.display_name }}</h1>
+        {% if seller.location %}
+          <p class="tf-seller-location">{{ seller.location }}</p>
+        {% endif %}
+        {% if seller.years_active %}
+          <p class="tf-seller-years">Active for {{ seller.years_active }} years</p>
+        {% endif %}
+        {% if user.is_authenticated %}
+          <button class="tf-btn tf-btn-ghost" onclick="alert('Follow functionality coming soon')">Follow Seller</button>
+        {% endif %}
+      </div>
+    </header>
+
+    {% if seller.bio %}
+      <div class="tf-seller-bio-section">
+        <h2>About</h2>
+        <p>{{ seller.bio|linebreaks }}</p>
+      </div>
+    {% endif %}
+
+    {% if seller.curation_style %}
+      <div class="tf-seller-style-section">
+        <h2>Curation Style</h2>
+        <p>{{ seller.curation_style|linebreaks }}</p>
+      </div>
+    {% endif %}
+
+    <div class="tf-seller-products">
+      <h2>Shop {{ seller.display_name }}</h2>
+      {% if products %}
+        <div class="tf-grid">
+          {% for product in products %}
+            <article class="tf-card">
+              <a href="{{ product.get_absolute_url }}" class="tf-card-link">
+                {% with image=product.images.first %}
+                  {% if image %}
+                    <div class="tf-card-image" style="background-image:url('{{ image.image.url }}');"></div>
+                  {% else %}
+                    <div class="tf-card-image tf-card-placeholder"></div>
+                  {% endif %}
+                {% endwith %}
+                <div class="tf-card-body">
+                  <p class="tf-card-eyebrow">{{ product.era }} • {{ product.get_category_display }}</p>
+                  <h3>{{ product.title }}</h3>
+                  <p class="tf-card-price">${{ product.price }}</p>
+                  <p class="tf-card-meta">{{ product.get_condition_display }}</p>
+                </div>
+              </a>
+            </article>
+          {% endfor %}
+        </div>
+      {% else %}
+        <p class="tf-empty">{{ seller.display_name }} hasn't listed any items yet. Check back soon!</p>
+      {% endif %}
+    </div>
+  </div>
+</section>
+{% endblock %}
+

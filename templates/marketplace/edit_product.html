@@ -1,0 +1,286 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Edit Product – Timeless Finds{% endblock %}
+
+{% block content %}
+<div class="tf-create-product-container">
+  <div class="tf-form-wrapper">
+    <h1>Edit Product</h1>
+    <p class="tf-subtitle">Update your product details</p>
+    
+    <form method="post" enctype="multipart/form-data" class="tf-product-form">
+      {% csrf_token %}
+      
+      <fieldset class="tf-form-section">
+        <legend>Basic Information</legend>
+        
+        <div class="tf-form-group">
+          <label for="{{ form.title.id_for_label }}">{{ form.title.label }}</label>
+          {{ form.title }}
+          {% if form.title.errors %}
+            <div class="tf-form-error">{{ form.title.errors }}</div>
+          {% endif %}
+        </div>
+        
+        <div class="tf-form-group">
+          <label for="{{ form.slug.id_for_label }}">{{ form.slug.label }}</label>
+          {{ form.slug }}
+          {% if form.slug.errors %}
+            <div class="tf-form-error">{{ form.slug.errors }}</div>
+          {% endif %}
+        </div>
+        
+        <div class="tf-form-row">
+          <div class="tf-form-group tf-form-group-half">
+            <label for="{{ form.era.id_for_label }}">{{ form.era.label }}</label>
+            {{ form.era }}
+            {% if form.era.errors %}
+              <div class="tf-form-error">{{ form.era.errors }}</div>
+            {% endif %}
+          </div>
+          
+          <div class="tf-form-group tf-form-group-half">
+            <label for="{{ form.category.id_for_label }}">{{ form.category.label }}</label>
+            {{ form.category }}
+            {% if form.category.errors %}
+              <div class="tf-form-error">{{ form.category.errors }}</div>
+            {% endif %}
+          </div>
+        </div>
+        
+        <div class="tf-form-row">
+          <div class="tf-form-group tf-form-group-half">
+            <label for="{{ form.condition.id_for_label }}">{{ form.condition.label }}</label>
+            {{ form.condition }}
+            {% if form.condition.errors %}
+              <div class="tf-form-error">{{ form.condition.errors }}</div>
+            {% endif %}
+          </div>
+          
+          <div class="tf-form-group tf-form-group-half">
+            <label for="{{ form.price.id_for_label }}">{{ form.price.label }}</label>
+            {{ form.price }}
+            {% if form.price.errors %}
+              <div class="tf-form-error">{{ form.price.errors }}</div>
+            {% endif %}
+          </div>
+        </div>
+      </fieldset>
+      
+      <fieldset class="tf-form-section">
+        <legend>Description & Story</legend>
+        
+        <div class="tf-form-group">
+          <label for="{{ form.description.id_for_label }}">{{ form.description.label }}</label>
+          {{ form.description }}
+          {% if form.description.errors %}
+            <div class="tf-form-error">{{ form.description.errors }}</div>
+          {% endif %}
+        </div>
+        
+        <div class="tf-form-group">
+          <label for="{{ form.story.id_for_label }}">{{ form.story.label }}</label>
+          {{ form.story }}
+          {% if form.story.errors %}
+            <div class="tf-form-error">{{ form.story.errors }}</div>
+          {% endif %}
+        </div>
+      </fieldset>
+      
+      <fieldset class="tf-form-section">
+        <legend>Details</legend>
+        
+        <div class="tf-form-group">
+          <label for="{{ form.measurements.id_for_label }}">{{ form.measurements.label }}</label>
+          {{ form.measurements }}
+          {% if form.measurements.errors %}
+            <div class="tf-form-error">{{ form.measurements.errors }}</div>
+          {% endif %}
+        </div>
+        
+        <div class="tf-form-group">
+          <label for="{{ form.materials.id_for_label }}">{{ form.materials.label }}</label>
+          {{ form.materials }}
+          {% if form.materials.errors %}
+            <div class="tf-form-error">{{ form.materials.errors }}</div>
+          {% endif %}
+        </div>
+        
+        <div class="tf-form-group">
+          <label for="{{ form.sustainability_tags.id_for_label }}">{{ form.sustainability_tags.label }}</label>
+          {{ form.sustainability_tags }}
+          {% if form.sustainability_tags.errors %}
+            <div class="tf-form-error">{{ form.sustainability_tags.errors }}</div>
+          {% endif %}
+        </div>
+        
+        <div class="tf-form-row">
+          <div class="tf-form-group tf-form-group-half">
+            <label for="{{ form.inventory.id_for_label }}">{{ form.inventory.label }}</label>
+            {{ form.inventory }}
+            {% if form.inventory.errors %}
+              <div class="tf-form-error">{{ form.inventory.errors }}</div>
+            {% endif %}
+          </div>
+          
+          <div class="tf-form-group tf-form-group-half">
+            <label for="{{ form.product_image.id_for_label }}">{{ form.product_image.label }}</label>
+            {{ form.product_image }}
+            {% if form.product_image.errors %}
+              <div class="tf-form-error">{{ form.product_image.errors }}</div>
+            {% endif %}
+          </div>
+        </div>
+      </fieldset>
+      
+      <fieldset class="tf-form-section">
+        <legend>Visibility</legend>
+        
+        <div class="tf-form-group tf-form-checkbox">
+          {{ form.is_active }}
+          <label for="{{ form.is_active.id_for_label }}">{{ form.is_active.label }} (Make this product available for sale)</label>
+          {% if form.is_active.errors %}
+            <div class="tf-form-error">{{ form.is_active.errors }}</div>
+          {% endif %}
+        </div>
+        
+        <div class="tf-form-group tf-form-checkbox">
+          {{ form.is_featured }}
+          <label for="{{ form.is_featured.id_for_label }}">{{ form.is_featured.label }} (Feature on homepage)</label>
+          {% if form.is_featured.errors %}
+            <div class="tf-form-error">{{ form.is_featured.errors }}</div>
+          {% endif %}
+        </div>
+      </fieldset>
+      
+      <div class="tf-form-actions">
+        <button type="submit" class="tf-btn tf-btn-primary">Update Product</button>
+        <a href="{% url 'seller_dashboard' %}" class="tf-btn tf-btn-secondary">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<style>
+  .tf-create-product-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 2rem;
+  }
+
+  .tf-form-wrapper h1 {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .tf-subtitle {
+    color: #666;
+    margin-bottom: 2rem;
+  }
+
+  .tf-form-section {
+    border: none;
+    margin-bottom: 2rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid #eee;
+  }
+
+  .tf-form-section legend {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    padding: 0;
+  }
+
+  .tf-form-group {
+    margin-bottom: 1.5rem;
+  }
+
+  .tf-form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+  }
+
+  .tf-form-group input,
+  .tf-form-group textarea,
+  .tf-form-group select {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: 1rem;
+  }
+
+  .tf-form-group textarea {
+    resize: vertical;
+    min-height: 120px;
+  }
+
+  .tf-form-group-half {
+    width: calc(50% - 0.75rem);
+  }
+
+  .tf-form-row {
+    display: flex;
+    gap: 1.5rem;
+  }
+
+  .tf-form-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .tf-form-checkbox input[type="checkbox"] {
+    width: auto;
+  }
+
+  .tf-form-checkbox label {
+    margin-bottom: 0;
+  }
+
+  .tf-form-error {
+    color: #d32f2f;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+  }
+
+  .tf-form-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+
+  .tf-btn {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.3s ease;
+  }
+
+  .tf-btn-primary {
+    background-color: #333;
+    color: white;
+  }
+
+  .tf-btn-primary:hover {
+    background-color: #555;
+  }
+
+  .tf-btn-secondary {
+    background-color: #eee;
+    color: #333;
+  }
+
+  .tf-btn-secondary:hover {
+    background-color: #ddd;
+  }
+</style>
+{% endblock %}

@@ -1,0 +1,190 @@
+{% extends "base.html" %}
+
+{% block title %}Timeless Finds – Vintage Marketplace{% endblock %}
+
+{% block content %}
+<main class="tf-page">
+  <!-- Hero with personalized greeting -->
+  <section class="tf-hero-welcome">
+    <div class="tf-hero-welcome-inner">
+      {% if user.is_authenticated %}
+        <h1>Welcome to Timeless Finds, {{ user.first_name|default:user.username }}</h1>
+      {% else %}
+        <h1>Welcome to Timeless Finds</h1>
+      {% endif %}
+      <p>Explore thousands of curated vintage finds</p>
+    </div>
+  </section>
+
+  <!-- Category carousel -->
+  <section class="tf-categories-carousel">
+    <div class="tf-carousel-wrapper">
+      <div class="tf-carousel-track">
+        <a href="{% url 'product_list' %}?category=clothes" class="tf-carousel-card">
+          <div class="tf-carousel-image" style="background: linear-gradient(135deg, #d4a574 0%, #c89066 100%);">
+            <img src="/media/shirts.jpg" class="card-img-top img-fluid" alt="{{ p.name }}"></div>
+          <p class="tf-carousel-label">Clothes</p>
+        </a>
+        <a href="{% url 'product_list' %}?category=home" class="tf-carousel-card">
+          <div class="tf-carousel-image" style="background: linear-gradient(135deg, #b8a89a 0%, #a0968a 100%);">
+            <img src="/media/home.jpg/" class="card-img-top img-fluid" alt="{{ p.name }}"></div>
+          <p class="tf-carousel-label">Furniture</p>
+        </a>
+        <a href="{% url 'product_list' %}?category=jewelry" class="tf-carousel-card">
+          <div class="tf-carousel-image" style="background: linear-gradient(135deg, #c4957f 0%, #b5846f 100%);">
+            <img src="/media/jacket.jpg/" class="card-img-top img-fluid" alt="{{ p.name }}"></div>
+          <p class="tf-carousel-label">Jewelry</p>
+        </a>
+        <a href="{% url 'product_list' %}?category=home" class="tf-carousel-card">
+          <div class="tf-carousel-image" style="background: linear-gradient(135deg, #d9a96a 0%, #cc9a5a 100%);">
+            <img src="/media/item.jpg/" class="card-img-top img-fluid" alt="{{ p.name }}"></div>
+          <p class="tf-carousel-label">Home accessories</p>
+        </a>
+        <a href="{% url 'product_list' %}?category=gifts" class="tf-carousel-card">
+          <div class="tf-carousel-image" style="background: linear-gradient(135deg, #d9a895 0%, #cc9a87 100%);">
+            <img src="/media/items.jpg/" class="card-img-top img-fluid" alt="{{ p.name }}"></div>
+          <p class="tf-carousel-label">Confections</p>
+        </a>
+      </div>
+    </div>
+    <div class="tf-hero-art">
+      <div class="tf-hero-card">
+        <p class="tf-hero-label">Curated Drops</p>
+        <p class="tf-hero-body">Rotating, small-batch selections from trusted vintage curators.</p>
+      </div>
+      <div class="tf-hero-tag">Authentic • Curated • Sustainable</div>
+    </div>
+  </section>
+
+  <!-- Featured Products -->
+  <section class="tf-featured-section">
+    <header class="tf-section-header">
+      <h2>Featured Curated Pieces</h2>
+      <a href="{% url 'product_list' %}" class="tf-section-link">Shop all pieces →</a>
+    </header>
+    <div class="tf-grid">
+      {% for product in featured_products %}
+        <article class="tf-card">
+          <a href="{{ product.get_absolute_url }}" class="tf-card-link">
+            {% with image=product.images.first %}
+              {% if image %}
+                <div class="tf-card-image" style="background-image:url('{{ image.image.url }}');"></div>
+              {% else %}
+                <div class="tf-card-image tf-card-placeholder"></div>
+              {% endif %}
+            {% endwith %}
+            <div class="tf-card-body">
+              <p class="tf-card-eyebrow">{{ product.era }} • {{ product.get_category_display }}</p>
+              <h3>{{ product.title }}</h3>
+              <p class="tf-card-price">${{ product.price }}</p>
+              <p class="tf-card-meta">
+                {{ product.seller.display_name }}
+                {% if product.seller.location %} • {{ product.seller.location }}{% endif %}
+              </p>
+            </div>
+          </a>
+        </article>
+      {% empty %}
+        <p class="tf-empty">Featured drops are being curated. Check back soon.</p>
+      {% endfor %}
+    </div>
+  </section>
+
+  <!-- New Arrivals -->
+  <section class="tf-arrivals-section">
+    <header class="tf-section-header">
+      <h2>New Arrivals</h2>
+      <a href="{% url 'product_list' %}" class="tf-section-link">View all →</a>
+    </header>
+    <div class="tf-grid tf-grid-compact">
+      {% for product in new_arrivals %}
+        <article class="tf-card tf-card-compact">
+          <a href="{{ product.get_absolute_url }}" class="tf-card-link">
+            {% with image=product.images.first %}
+              {% if image %}
+                <div class="tf-card-thumb" style="background-image:url('{{ image.image.url }}');"></div>
+              {% else %}
+                <div class="tf-card-thumb tf-card-placeholder"></div>
+              {% endif %}
+            {% endwith %}
+            <div class="tf-card-body">
+              <p class="tf-card-eyebrow">{{ product.era }} • {{ product.get_condition_display }}</p>
+              <h3>{{ product.title }}</h3>
+              <p class="tf-card-price">${{ product.price }}</p>
+            </div>
+          </a>
+        </article>
+      {% empty %}
+        <p class="tf-empty">No new arrivals yet.</p>
+      {% endfor %}
+    </div>
+  </section>
+
+  <!-- Shop by Era -->
+  <section class="tf-era-section">
+    <header class="tf-section-header">
+      <h2>Shop by Era</h2>
+      <p>Explore pieces by decade – from mid-century silhouettes to Y2K nostalgia.</p>
+    </header>
+    <div class="tf-era-grid">
+      <a href="{% url 'product_list' %}?era=1950s" class="tf-era-card">
+        <span class="tf-era-label">50s</span>
+        <span class="tf-era-caption">Shop 1950s</span>
+      </a>
+      <a href="{% url 'product_list' %}?era=1960s" class="tf-era-card">
+        <span class="tf-era-label">60s</span>
+        <span class="tf-era-caption">Shop 1960s</span>
+      </a>
+      <a href="{% url 'product_list' %}?era=1970s" class="tf-era-card">
+        <span class="tf-era-label">70s</span>
+        <span class="tf-era-caption">Shop 1970s</span>
+      </a>
+      <a href="{% url 'product_list' %}?era=1980s" class="tf-era-card">
+        <span class="tf-era-label">80s</span>
+        <span class="tf-era-caption">Shop 1980s</span>
+      </a>
+      <a href="{% url 'product_list' %}?era=1990s" class="tf-era-card">
+        <span class="tf-era-label">90s</span>
+        <span class="tf-era-caption">Shop 1990s</span>
+      </a>
+      <a href="{% url 'product_list' %}?era=2000s" class="tf-era-card">
+        <span class="tf-era-label">Y2K</span>
+        <span class="tf-era-caption">Shop 2000s</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- Editorial Section -->
+  <section class="tf-editorial-section">
+    <header class="tf-section-header">
+      <h2>Stories & Editorial</h2>
+      <p>Behind the piece, seller spotlights, era guides, and care tips</p>
+    </header>
+    <div class="tf-editorial-row">
+      <div class="tf-editorial-list">
+        {% for article in editorial_features %}
+          <article class="tf-editorial-card">
+            <a href="{{ article.get_absolute_url }}">
+              <p class="tf-card-eyebrow">{{ article.get_type_display }}</p>
+              <h3>{{ article.title }}</h3>
+              <p class="tf-editorial-excerpt">{{ article.excerpt }}</p>
+            </a>
+          </article>
+        {% empty %}
+          <p class="tf-empty">Editorial stories are coming soon.</p>
+        {% endfor %}
+      </div>
+      <aside class="tf-editorial-aside">
+        <h3>Why Vintage?</h3>
+        <p>
+          Vintage celebrates longevity and craft. Timeless Finds surfaces pieces with
+          real provenance, thoughtful curation, and lower environmental impact than
+          buying new.
+        </p>
+      </aside>
+    </div>
+  </section>
+</main>
+{% endblock %}
+
+

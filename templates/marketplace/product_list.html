@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+
+{% block title %}Shop Vintage – Timeless Finds{% endblock %}
+
+{% block content %}
+<section class="tf-page">
+  <header class="tf-section-header tf-section-header--with-search">
+    <div>
+      <h1>Shop Vintage</h1>
+      <p>Filter by era, category, condition, and price to find your next timeless piece.</p>
+    </div>
+    <form method="get" class="tf-search-bar">
+      <input type="search" name="q" value="{{ request.GET.q }}" placeholder="Search by title, story, or description…">
+      <button class="tf-btn tf-btn-primary" type="submit">Search</button>
+    </form>
+  </header>
+
+  <div class="tf-layout">
+    <aside class="tf-filters">
+      <h2>Filter</h2>
+      <div class="tf-filter-group">
+        <label>Era</label>
+        <select name="era" form="filters-form">
+          <option value="">Any</option>
+          {% for value, label in product_era_choices %}
+            <option value="{{ value }}" {% if request.GET.era == value %}selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="tf-filter-group">
+        <label>Category</label>
+        <select name="category" form="filters-form">
+          <option value="">Any</option>
+          {% for value, label in product_category_choices %}
+            <option value="{{ value }}" {% if request.GET.category == value %}selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="tf-filter-group">
+        <label>Condition</label>
+        <select name="condition" form="filters-form">
+          <option value="">Any</option>
+          {% for value, label in product_condition_choices %}
+            <option value="{{ value }}" {% if request.GET.condition == value %}selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="tf-filter-group">
+        <label>Location</label>
+        <input type="text" name="location" form="filters-form" value="{{ request.GET.location }}" placeholder="City or country">
+      </div>
+      <div class="tf-filter-group tf-filter-group--inline">
+        <div>
+          <label>Min price</label>
+          <input type="number" name="price_min" form="filters-form" value="{{ request.GET.price_min }}">
+        </div>
+        <div>
+          <label>Max price</label>
+          <input type="number" name="price_max" form="filters-form" value="{{ request.GET.price_max }}">
+        </div>
+      </div>
+      <form id="filters-form" method="get">
+        {% if request.GET.q %}
+          <input type="hidden" name="q" value="{{ request.GET.q }}">
+        {% endif %}
+        <button class="tf-btn tf-btn-ghost" type="submit">Apply filters</button>
+      </form>
+    </aside>
+
+    <div class="tf-grid">
+      {% for product in products %}
+        <article class="tf-card">
+          <a href="{{ product.get_absolute_url }}" class="tf-card-link">
+            {% with image=product.images.first %}
+              {% if image %}
+                <div class="tf-card-image">
+                  <img src="{{ image.image.url }}" alt="{{ image.alt_text|default:product.title }}" loading="lazy">
+                </div>
+              {% else %}
+                <div class="tf-card-image tf-card-placeholder" role="img" aria-label="No image available"></div>
+              {% endif %}
+            {% endwith %}
+            <div class="tf-card-body">
+              <p class="tf-card-eyebrow">{{ product.era }} • {{ product.get_category_display }}</p>
+              <h3>{{ product.title }}</h3>
+              <p class="tf-card-price">${{ product.price }}</p>
+              <p class="tf-card-meta">
+                {{ product.seller.display_name }}
+                {% if product.seller.location %} • {{ product.seller.location }}{% endif %}
+              </p>
+            </div>
+          </a>
+        </article>
+      {% empty %}
+        <p class="tf-empty">No pieces match your filters yet.</p>
+      {% endfor %}
+    </div>
+    {% if paginator.num_pages > 1 %}
+      <nav class="tf-pagination" aria-label="Product pagination">
+        <ul>
+          {% if products.has_previous %}
+            <li><a class="tf-btn" href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}{% if request.GET.category %}category={{ request.GET.category }}&{% endif %}page={{ products.previous_page_number }}">Previous</a></li>
+          {% else %}
+            <li><span class="tf-btn" aria-disabled="true">Previous</span></li>
+          {% endif %}
+
+          <li><span class="tf-link-muted">Page {{ products.number }} of {{ paginator.num_pages }}</span></li>
+
+          {% if products.has_next %}
+            <li><a class="tf-btn" href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}{% if request.GET.category %}category={{ request.GET.category }}&{% endif %}page={{ products.next_page_number }}">Next</a></li>
+          {% else %}
+            <li><span class="tf-btn" aria-disabled="true">Next</span></li>
+          {% endif %}
+        </ul>
+      </nav>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}
+
+

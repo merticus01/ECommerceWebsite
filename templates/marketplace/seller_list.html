@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block title %}Meet the Sellers – Timeless Finds{% endblock %}
+
+{% block content %}
+<section class="tf-page">
+  <header class="tf-section-header">
+    <h1>Meet the Sellers</h1>
+    <p>Independent vintage shop owners, curators, collectors, and estate sellers – each bringing their unique perspective and expertise to Timeless Finds.</p>
+  </header>
+
+  <div class="tf-seller-grid">
+    {% for seller in sellers %}
+      <article class="tf-seller-card">
+        <a href="{{ seller.get_absolute_url }}" class="tf-seller-card-link">
+          <div class="tf-seller-card-body">
+            <h3>{{ seller.display_name }}</h3>
+            {% if seller.location %}
+              <p class="tf-seller-meta">{{ seller.location }}</p>
+            {% endif %}
+            {% if seller.years_active %}
+              <p class="tf-seller-meta">{{ seller.years_active }} years active</p>
+            {% endif %}
+            {% if seller.bio %}
+              <p class="tf-seller-bio">{{ seller.bio|truncatewords:25 }}</p>
+            {% endif %}
+            {% if seller.curation_style %}
+              <p class="tf-seller-style"><em>{{ seller.curation_style|truncatewords:20 }}</em></p>
+            {% endif %}
+            <span class="tf-seller-link-text">View shop →</span>
+          </div>
+        </a>
+      </article>
+    {% empty %}
+      <p class="tf-empty">No sellers available yet. Check back soon!</p>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}
+

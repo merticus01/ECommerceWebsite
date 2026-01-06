@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ product.title }} – Timeless Finds{% endblock %}
+
+{% block content %}
+<div class="tf-page">
+  <div class="tf-product-detail">
+    <div class="tf-product-gallery">
+      {% if product.images.all %}
+        <div class="tf-gallery-main">
+          {% with primary_image=product.images.first %}
+            <img src="{{ primary_image.image.url }}" alt="{{ primary_image.alt_text|default:product.title }}">
+          {% endwith %}
+        </div>
+        {% if product.images.count > 1 %}
+          <div class="tf-gallery-thumbs">
+            {% for image in product.images.all %}
+              <div class="tf-gallery-thumb">
+                <img src="{{ image.image.url }}" alt="{{ image.alt_text|default:product.title }}">
+              </div>
+            {% endfor %}
+          </div>
+        {% endif %}
+      {% else %}
+        <div class="tf-gallery-main tf-placeholder">
+          <span>No image available</span>
+        </div>
+      {% endif %}
+    </div>
+
+    <div class="tf-product-info">
+      <div class="tf-product-header">
+        <p class="tf-product-eyebrow">{{ product.era }} • {{ product.get_category_display }}</p>
+        <h1 class="tf-product-title">{{ product.title }}</h1>
+        <p class="tf-product-price">${{ product.price }}</p>
+      </div>
+
+      <div class="tf-product-meta">
+        <div class="tf-meta-row">
+          <span class="tf-meta-label">Condition</span>
+          <span class="tf-meta-value">{{ product.get_condition_display }}</span>
+        </div>
+        {% if product.measurements %}
+          <div class="tf-meta-row">
+            <span class="tf-meta-label">Measurements</span>
+            <span class="tf-meta-value">{{ product.measurements }}</span>
+          </div>
+        {% endif %}
+        {% if product.materials %}
+          <div class="tf-meta-row">
+            <span class="tf-meta-label">Materials</span>
+            <span class="tf-meta-value">{{ product.materials }}</span>
+          </div>
+        {% endif %}
+      </div>
+
+      <div class="tf-product-description">
+        <h2>Description</h2>
+        <p>{{ product.description|linebreaks }}</p>
+      </div>
+
+      {% if product.story %}
+        <div class="tf-product-story">
+          <h2>The Story</h2>
+          <p>{{ product.story|linebreaks }}</p>
+        </div>
+      {% endif %}
+
+      {% if product.sustainability_tags %}
+        <div class="tf-product-tags">
+          <span class="tf-tag">{{ product.sustainability_tags }}</span>
+        </div>
+      {% endif %}
+
+      <div class="tf-product-seller">
+        <h3>Seller</h3>
+        <a href="{{ product.seller.get_absolute_url }}" class="tf-seller-link">
+          <strong>{{ product.seller.display_name }}</strong>
+          {% if product.seller.location %}
+            <span> • {{ product.seller.location }}</span>
+          {% endif %}
+        </a>
+        {% if product.seller.bio %}
+          <p class="tf-seller-bio">{{ product.seller.bio|truncatewords:30 }}</p>
+        {% endif %}
+      </div>
+
+      <div class="tf-product-actions">
+        {% if in_cart %}
+          <a href="{% url 'cart' %}" class="tf-btn tf-btn-primary">View in Cart</a>
+        {% else %}
+          <a href="{% url 'add_to_cart' product.slug %}" class="tf-btn tf-btn-primary">Add to Cart</a>
+        {% endif %}
+        {% if user.is_authenticated %}
+          <button class="tf-btn tf-btn-ghost" onclick="alert('Favorite functionality coming soon')">Save to Favorites</button>
+        {% endif %}
+      </div>
+
+      <div class="tf-product-disclaimer">
+        <p><small>This item is authenticated and verified by our team. All vintage items are sold as-is, reflecting their age and unique character.</small></p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
